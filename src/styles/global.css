@@ -8,7 +8,11 @@
 }
 
 :root {
-  --primary-color: rgb(3, 42, 46);
+  --primary-color: rgb(32, 196, 214);
+  --primary-color-dark: rgb(5, 59, 65);
+
+  --primary-color-medium-opacity:rgba(29, 168, 184, 0.3);
+  --primary-color-low-opacity: rgba(0, 135, 150, 0.12);
 
   font-size: 62.5%;
 }

@@ -1,14 +1,39 @@
 .usernameForm {
+  --input-vertical-padding: 1rem;
+  --input-horizontal-padding: 1.2rem;
+
+  width: 100%;
   margin-bottom: 1rem;
   color: var(--primary-color);
+
+  position: relative;
 }
 
 .usernameForm > input {
-  padding: 0.5rem 0.7rem;
-  border: 1px solid var(--primary-color);
-  border-radius: 0.35rem;
+  width: 100%;
+  padding: var(--input-vertical-padding) var(--input-horizontal-padding);
+  padding-left: calc(var(--input-horizontal-padding) * 2 + 1.8rem);
+  border: none;
+  outline: none;
+  border-radius: 0.6rem;
+
+  transition: box-shadow 0.08s;
+  background-color: var(--primary-color-low-opacity);
 }
 
 .usernameForm > input:focus {
-  outline-color: var(--primary-color);
+  box-shadow: 0px 0px 0px 3px var(--primary-color-medium-opacity),
+    0px 0px 1px 1px var(--primary-color-medium-opacity);
+}
+
+.usernameForm__searchIcon {
+  width: 1.8rem;
+  height: 1.8rem;
+
+  color: var(--primary-color-dark);
+
+  position: absolute;
+  top: 50%;
+  left: var(--input-horizontal-padding);
+  transform: translateY(-50%);
 }

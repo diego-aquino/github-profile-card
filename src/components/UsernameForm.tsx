@@ -8,6 +8,7 @@ import React, {
 
 import { Extend } from '../typings';
 import '../styles/components/UsernameForm.css';
+import SearchIcon from '../assets/SearchIcon';
 
 type Props = Extend<
   FormHTMLAttributes<HTMLFormElement>,
@@ -29,6 +30,7 @@ const UsernameForm: FC<Props> = ({ onSubmit, ...rest }) => {
 
   return (
     <form className="usernameForm" {...rest} onSubmit={handleSubmit}>
+      <SearchIcon className="usernameForm__searchIcon" title="Search" />
       <input ref={usernameInputRef} type="text" />
     </form>
   );
