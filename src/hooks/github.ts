@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
 import { AxiosError, AxiosResponse } from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { gitHubApi } from '../services/api';
 
 interface GitHubUser {
   login: string;
   name: string;
+  bio: string;
   avatar_url: string;
   html_url: string;
-  bio: string;
 }
 
 export interface User {
@@ -19,41 +19,15 @@ export interface User {
   htmlUrl: string;
 }
 
-interface IdleResponse {
-  isLoading: false;
-  user: null;
-  error?: never;
+interface UseGitHubUserResponse {
+  user: User | null;
+  error: AxiosError | null;
+  isLoading: boolean;
 }
 
-interface LoadingResponse {
-  isLoading: true;
-  user: null;
-  error?: never;
-}
-
-interface SuccessResponse {
-  isLoading: false;
-  user: User;
-  error?: never;
-}
-
-interface ErrorResponse {
-  isLoading: false;
-  user: null;
-  error: AxiosError;
-}
-
-type Response =
-  | IdleResponse
-  | LoadingResponse
-  | SuccessResponse
-  | ErrorResponse;
-
-export function useGitHubUser(username: string): Response {
-  const [response, setResponse] = useState<Response>({
-    user: null,
-    isLoading: false,
-  });
+export function useGitHubUser(username: string): UseGitHubUserResponse {
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<AxiosError | null>(null);
 
   useEffect(() => {
     if (username === '') return;
@@ -61,31 +35,38 @@ export function useGitHubUser(username: string): Response {
     const updateResponseWithSuccessData = (
       gitHubResponse: AxiosResponse<GitHubUser>,
     ) => {
-      const { data: gitHubUser } = gitHubResponse;
+      const {
+        login,
+        name,
+        bio,
+        avatar_url: avatarUrl,
+        html_url: htmlUrl,
+      } = gitHubResponse.data;
 
-      setResponse({
-        user: {
-          username: gitHubUser.login,
-          name: gitHubUser.name,
-          bio: gitHubUser.bio,
-          avatarUrl: gitHubUser.avatar_url,
-          htmlUrl: gitHubUser.html_url,
-        },
-        isLoading: false,
-      });
+      setUser({ username: login, name, bio, avatarUrl, htmlUrl });
     };
 
-    const handleRequestError = (error: AxiosError) => {
-      setResponse({ user: null, isLoading: false, error });
+    const handleRequestError = (requestError: AxiosError) => {
+      setError(requestError);
     };
 
-    setResponse({ user: null, isLoading: true });
+    setUser(null);
+    setError(null);
 
     gitHubApi
       .get<GitHubUser>(`/users/${username}`)
       .then(updateResponseWithSuccessData)
       .catch(handleRequestError);
   }, [username]);
+
+  const response = useMemo<UseGitHubUserResponse>(
+    () => ({
+      user,
+      error,
+      isLoading: !!username && !user && !error,
+    }),
+    [username, user, error],
+  );
 
   return response;
 }
