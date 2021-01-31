@@ -9,22 +9,6 @@
   justify-content: center;
 }
 
-.app__usernameForm {
-  margin-bottom: 1rem;
-  color: var(--primary-color);
-}
-
-.app__usernameForm > input {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--primary-color);
-  border-radius: 0.35rem;
-
-}
-
-.app__usernameForm > input:focus {
-  outline-color: var(--primary-color);
-}
-
 .app__userCardContainer {
   flex: 1;
   display: flex;

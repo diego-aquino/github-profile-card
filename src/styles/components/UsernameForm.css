@@ -1,0 +1,14 @@
+.usernameForm {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.usernameForm > input {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 0.35rem;
+}
+
+.usernameForm > input:focus {
+  outline-color: var(--primary-color);
+}
