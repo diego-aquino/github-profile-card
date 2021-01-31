@@ -11,6 +11,7 @@ const App: FC = () => {
   const { user, isLoading, error } = useGitHubUser(username);
 
   const handleUsernameFormSubmit = useCallback((searchUsername: string) => {
+    if (searchUsername === '') return;
     setUsername(searchUsername);
   }, []);
 

@@ -43,7 +43,7 @@ async function fetchGitHubUser(username: string): Promise<User> {
 
 export function useGitHubUser(username: string): UseGitHubUserResponse {
   const { data: user, error } = useSWR<User, AxiosError>(
-    username,
+    username === '' ? null : username,
     fetchGitHubUser,
   );
 
