@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
-import { AxiosError, AxiosResponse } from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import useSWR from 'swr';
+import { AxiosError } from 'axios';
+
 import { gitHubApi } from '../services/api';
 
 interface GitHubUser {
@@ -20,44 +22,30 @@ export interface User {
 }
 
 interface UseGitHubUserResponse {
-  user: User | null;
-  error: AxiosError | null;
+  user?: User;
+  error?: AxiosError;
   isLoading: boolean;
 }
 
+async function fetchGitHubUser(username: string): Promise<User> {
+  const response = await gitHubApi.get<GitHubUser>(`/users/${username}`);
+
+  const {
+    login,
+    name,
+    bio,
+    avatar_url: avatarUrl,
+    html_url: htmlUrl,
+  } = response.data;
+
+  return { username: login, name, bio, avatarUrl, htmlUrl };
+}
+
 export function useGitHubUser(username: string): UseGitHubUserResponse {
-  const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<AxiosError | null>(null);
-
-  useEffect(() => {
-    if (username === '') return;
-
-    const updateResponseWithSuccessData = (
-      gitHubResponse: AxiosResponse<GitHubUser>,
-    ) => {
-      const {
-        login,
-        name,
-        bio,
-        avatar_url: avatarUrl,
-        html_url: htmlUrl,
-      } = gitHubResponse.data;
-
-      setUser({ username: login, name, bio, avatarUrl, htmlUrl });
-    };
-
-    const handleRequestError = (requestError: AxiosError) => {
-      setError(requestError);
-    };
-
-    setUser(null);
-    setError(null);
-
-    gitHubApi
-      .get<GitHubUser>(`/users/${username}`)
-      .then(updateResponseWithSuccessData)
-      .catch(handleRequestError);
-  }, [username]);
+  const { data: user, error } = useSWR<User, AxiosError>(
+    username,
+    fetchGitHubUser,
+  );
 
   const response = useMemo<UseGitHubUserResponse>(
     () => ({
